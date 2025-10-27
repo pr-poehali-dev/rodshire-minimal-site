@@ -1,184 +1,209 @@
-import { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 
-interface Article {
+interface Bust {
   id: number;
+  name: string;
   title: string;
-  excerpt: string;
-  category: string;
-  date: string;
-  readTime: string;
-  featured?: boolean;
+  image: string;
 }
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState<'home' | 'articles'>('home');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const articles: Article[] = [
+  const busts: Bust[] = [
     {
       id: 1,
-      title: 'Минимализм в современном дизайне',
-      excerpt: 'Исследование принципов минимализма и их применение в цифровом пространстве. Как простота формы создает глубину восприятия.',
-      category: 'Дизайн',
-      date: '28 октября 2024',
-      readTime: '5 мин',
-      featured: true
+      name: 'Сократ',
+      title: 'Философ',
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/8f6369a5-25d6-4539-a10c-151e81bc1473.jpg'
     },
     {
       id: 2,
-      title: 'Будущее веб-технологий',
-      excerpt: 'Анализ трендов и направлений развития веб-разработки в следующем десятилетии.',
-      category: 'Технологии',
-      date: '25 октября 2024',
-      readTime: '7 мин'
+      name: 'Юлий Цезарь',
+      title: 'Император',
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/e649e5a8-c918-424f-b142-ed6586789021.jpg'
     },
     {
       id: 3,
-      title: 'Типографика как искусство',
-      excerpt: 'Погружение в мир шрифтов и их роль в создании эмоционального отклика.',
-      category: 'Дизайн',
-      date: '22 октября 2024',
-      readTime: '4 мин'
-    },
-    {
-      id: 4,
-      title: 'Философия простоты',
-      excerpt: 'Размышления о том, как меньшее количество элементов создает больше смысла.',
-      category: 'Философия',
-      date: '18 октября 2024',
-      readTime: '6 мин'
-    },
-    {
-      id: 5,
-      title: 'Цвет в минималистичном дизайне',
-      excerpt: 'Как использовать цветовые акценты в пространстве белого и черного.',
-      category: 'Дизайн',
-      date: '15 октября 2024',
-      readTime: '5 мин'
-    },
-    {
-      id: 6,
-      title: 'Пространство и баланс',
-      excerpt: 'Важность негативного пространства в создании гармоничных композиций.',
-      category: 'Дизайн',
-      date: '10 октября 2024',
-      readTime: '4 мин'
+      name: 'Марк Аврелий',
+      title: 'Философ-император',
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/30a77a2c-3c52-45df-ac1f-d137e12d0b74.jpg'
     }
   ];
 
-  const featuredArticle = articles.find(a => a.featured);
-  const regularArticles = articles.filter(a => !a.featured);
+  const nextBust = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentIndex((prev) => (prev + 1) % busts.length);
+      setTimeout(() => setIsAnimating(false), 600);
+    }
+  };
+
+  const prevBust = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setCurrentIndex((prev) => (prev - 1 + busts.length) % busts.length);
+      setTimeout(() => setIsAnimating(false), 600);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') prevBust();
+      if (e.key === 'ArrowRight') nextBust();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAnimating]);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      if (e.deltaX > 0) {
+        nextBust();
+      } else if (e.deltaX < 0) {
+        prevBust();
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight text-primary">RODSHIRE</h1>
-            <nav className="flex gap-8">
-              <button
-                onClick={() => setActiveSection('home')}
-                className={`text-sm font-medium tracking-wide transition-colors ${
-                  activeSection === 'home' ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                }`}
-              >
-                Главная
-              </button>
-              <button
-                onClick={() => setActiveSection('articles')}
-                className={`text-sm font-medium tracking-wide transition-colors ${
-                  activeSection === 'articles' ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                }`}
-              >
-                Статьи
-              </button>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div 
+      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+      style={{ backgroundColor: '#FAFAFA' }}
+      onWheel={handleWheel}
+    >
+      <div className="fixed left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-10">
+        <a
+          href="https://instagram.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
+          style={{ color: '#444444' }}
+        >
+          <Icon name="Instagram" size={22} />
+        </a>
+        <a
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
+          style={{ color: '#444444' }}
+        >
+          <Icon name="Twitter" size={22} />
+        </a>
+        <a
+          href="https://facebook.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110"
+          style={{ color: '#444444' }}
+        >
+          <Icon name="Facebook" size={22} />
+        </a>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-16">
-        {activeSection === 'home' && featuredArticle && (
-          <section className="mb-24">
-            <Card className="overflow-hidden border-0 shadow-none hover:shadow-lg transition-all duration-500 cursor-pointer group">
-              <div className="p-12 bg-secondary/30">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-                    {featuredArticle.category}
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground"></span>
-                  <span className="text-xs text-muted-foreground">{featuredArticle.date}</span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground"></span>
-                  <span className="text-xs text-muted-foreground">{featuredArticle.readTime}</span>
-                </div>
-                <h2 className="text-5xl font-bold mb-6 text-primary group-hover:text-foreground transition-colors">
-                  {featuredArticle.title}
-                </h2>
-                <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mb-8">
-                  {featuredArticle.excerpt}
-                </p>
-                <div className="flex items-center gap-2 text-primary font-medium group-hover:gap-4 transition-all">
-                  <span>Читать далее</span>
-                  <Icon name="ArrowRight" size={20} />
-                </div>
+      <div className="absolute top-12 left-1/2 -translate-x-1/2">
+        <h1 
+          className="text-5xl font-bold tracking-widest"
+          style={{ color: '#444444', fontFamily: 'Montserrat, sans-serif' }}
+        >
+          RODSHIRE
+        </h1>
+      </div>
+
+      <div className="flex items-center justify-center w-full max-w-6xl mx-auto px-4">
+        <button
+          onClick={prevBust}
+          disabled={isAnimating}
+          className="p-4 hover:scale-110 transition-transform duration-300 disabled:opacity-50"
+          style={{ color: '#444444' }}
+        >
+          <Icon name="ChevronLeft" size={48} />
+        </button>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-12">
+          <div className="relative w-full max-w-md aspect-square flex items-center justify-center">
+            {busts.map((bust, index) => (
+              <div
+                key={bust.id}
+                className={`absolute inset-0 flex items-center justify-center transition-all duration-600 ${
+                  index === currentIndex
+                    ? 'opacity-100 scale-100 z-10'
+                    : index === (currentIndex - 1 + busts.length) % busts.length
+                    ? 'opacity-0 -translate-x-full scale-90'
+                    : 'opacity-0 translate-x-full scale-90'
+                }`}
+                style={{
+                  transitionProperty: 'opacity, transform',
+                  transitionDuration: '600ms',
+                  transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                <img
+                  src={bust.image}
+                  alt={bust.name}
+                  className="w-full h-full object-contain drop-shadow-2xl"
+                  draggable={false}
+                />
               </div>
-            </Card>
-          </section>
-        )}
-
-        <section>
-          {activeSection === 'home' && (
-            <h3 className="text-2xl font-bold mb-12 text-primary">Последние публикации</h3>
-          )}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {regularArticles.map((article) => (
-              <Card
-                key={article.id}
-                className="overflow-hidden border-0 shadow-none hover:shadow-lg transition-all duration-300 cursor-pointer group"
-              >
-                <div className="p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-                      {article.category}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-primary group-hover:text-foreground transition-colors leading-tight">
-                    {article.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                    <span>{article.date}</span>
-                    <span className="w-1 h-1 rounded-full bg-muted-foreground"></span>
-                    <span>{article.readTime}</span>
-                  </div>
-                </div>
-              </Card>
             ))}
           </div>
-        </section>
-      </main>
 
-      <footer className="border-t border-gray-200 mt-32">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">© 2024 RODSHIRE. Все права защищены.</p>
-            <div className="flex gap-6">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Instagram" size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Twitter" size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Icon name="Mail" size={20} />
-              </a>
-            </div>
+          <div className="mt-12 text-center">
+            <h2 
+              className="text-4xl font-bold mb-2 transition-opacity duration-600"
+              style={{ color: '#444444', fontFamily: 'Montserrat, sans-serif' }}
+            >
+              {busts[currentIndex].name}
+            </h2>
+            <p 
+              className="text-xl tracking-wide transition-opacity duration-600"
+              style={{ color: '#888888', fontFamily: 'Open Sans, sans-serif' }}
+            >
+              {busts[currentIndex].title}
+            </p>
+          </div>
+
+          <div className="flex gap-3 mt-8">
+            {busts.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (!isAnimating && index !== currentIndex) {
+                    setIsAnimating(true);
+                    setCurrentIndex(index);
+                    setTimeout(() => setIsAnimating(false), 600);
+                  }
+                }}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? 'w-12 opacity-100' : 'w-2 opacity-40'
+                }`}
+                style={{ backgroundColor: '#444444' }}
+              />
+            ))}
           </div>
         </div>
-      </footer>
+
+        <button
+          onClick={nextBust}
+          disabled={isAnimating}
+          className="p-4 hover:scale-110 transition-transform duration-300 disabled:opacity-50"
+          style={{ color: '#444444' }}
+        >
+          <Icon name="ChevronRight" size={48} />
+        </button>
+      </div>
+
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <p 
+          className="text-sm tracking-widest opacity-60"
+          style={{ color: '#444444' }}
+        >
+          Пролистайте влево или вправо
+        </p>
+      </div>
     </div>
   );
 };
