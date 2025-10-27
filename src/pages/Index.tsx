@@ -17,19 +17,19 @@ const Index = () => {
       id: 1,
       name: 'Сократ',
       title: 'Философ',
-      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/8f6369a5-25d6-4539-a10c-151e81bc1473.jpg'
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/aadf6aa8-e1b3-468c-a8e5-b555d56bfe8a.jpg'
     },
     {
       id: 2,
       name: 'Юлий Цезарь',
       title: 'Император',
-      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/e649e5a8-c918-424f-b142-ed6586789021.jpg'
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/79d0207d-6061-46e3-a781-7e9f507190bb.jpg'
     },
     {
       id: 3,
       name: 'Марк Аврелий',
       title: 'Философ-император',
-      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/30a77a2c-3c52-45df-ac1f-d137e12d0b74.jpg'
+      image: 'https://cdn.poehali.dev/projects/894d5996-dcb8-4c13-9e86-ed96496ed986/files/3857d687-b5eb-4523-abbd-75cd900f5ad3.jpg'
     }
   ];
 
